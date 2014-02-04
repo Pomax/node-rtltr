@@ -61,3 +61,33 @@ s2 = "@keyframes spin {\
 ";
 
 test();
+
+s1 = ".hero-section .illustration {\
+  width: 60%;\
+  display: inline-block;\
+  margin: 20px 0;\
+  position: relative;\
+}\
+@media (min-width: 1020px) {\
+  .hero-section .illustration {\
+    margin: 80px 40px 0 0;\
+    width: 40%;\
+  }\
+}\
+";
+
+s2 = ".hero-section .illustration {\
+  width: 60%;\
+  display: inline-block;\
+  margin: 20px 0;\
+  position: relative;\
+}\
+@media (min-width: 1020px) {\
+  .hero-section .illustration {\
+    margin: 80px 0 0 40px;\
+    width: 40%;\
+  }\
+}\
+";
+
+test();

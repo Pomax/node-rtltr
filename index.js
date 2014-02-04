@@ -286,7 +286,7 @@
             errorMsg = "[_parseSelector] Expected {, }, ; or :, " +
                        "instead found " + next;
 
-        if (selector.indexOf("@keyframes") > -1) {
+        if(selector.match(/@(-\w+-)*keyframes/) !== null || selector.indexOf("@media") > -1) {
           this.keyframes = true;
           this.nesting = 0;
         }
@@ -305,7 +305,6 @@
         }
         } else if (next === ';' || next === '}') {
           // Otherwise, this is a parse error; we should have seen `{` instead.
-          console.log("X");
           throw new ParseError("MISSING_CSS_BLOCK_OPENER", this, selectorStart, selectorEnd, selector);
         } else {
           // We get here if an unexpected character was found.
