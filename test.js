@@ -1,5 +1,13 @@
 var rtltr = require("./index.js");
 
+function test() {
+  if (rtltr.flip(s1) !== s2) {
+    console.error("no equivalence;", s1, s2);
+    process.exit(1);
+  }
+}
+
+
 var s1 = ".my-right-class,\
 .another-left-class {\
   border-right: 10px;\
@@ -26,9 +34,30 @@ var s2 = ".my-right-class,\
   text-align: left;\
 }";
 
-if(rtltr.flip(s1) !== s2) {
-  console.error("test failure");
-  process.exit(1);
-}
+test();
 
-process.exit(0);
+s1 = "@keyframes spin {\
+  0% {\
+    transform: rotate(0deg);\
+    left: 0;\
+  }\
+  100% {\
+    transform: rotate(359deg);\
+    left: 100%;\
+  }\
+}\
+";
+
+s2 = "@keyframes spin {\
+  0% {\
+    transform: rotate(0deg);\
+    right: 0;\
+  }\
+  100% {\
+    transform: rotate(359deg);\
+    right: 100%;\
+  }\
+}\
+";
+
+test();

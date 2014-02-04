@@ -131,6 +131,8 @@
     this.stream = stream;
     this.domBuilder = domBuilder;
     this.rewrite = "";
+    this.nesting = 0;
+    this.keyframes = false;
   }
 
   CSSParser.prototype = {
@@ -212,6 +214,7 @@
     // Note that we cannot flag `:` as an error because pseudo-classes use
     // it as their prefix.
     _parseSelector: function() {
+
       // Depending on our state, we may be coming from having just parsed
       // a rule. If that's the case, add it to our list of rules.
       if (this.currentRule) {
@@ -235,6 +238,11 @@
           return;
         }
         if(this.stream.substream().trim() ==="") {
+          return;
+        }
+        if(this.keyframes && this.nesting === 1) {
+          this.keyframes = false;
+          this.nesting = 0;
           return;
         }
         throw new ParseError("MISSING_CSS_SELECTOR", this, this.stream.pos-1, this.stream.pos);
@@ -277,15 +285,27 @@
         var next = this.stream.next(),
             errorMsg = "[_parseSelector] Expected {, }, ; or :, " +
                        "instead found " + next;
+
+        if (selector.indexOf("@keyframes") > -1) {
+          this.keyframes = true;
+          this.nesting = 0;
+        }
+
         if (next === '{') {
+          if(this.keyframes) { this.nesting++; }
           // The only legal continuation after a selector is the opening
           // `{` character. If that's the character we see, we can mark the
           // start of the declarations block and start parsing them.
-          this.currentRule.declarations.start = this.stream.pos-1;
-          this._parseDeclaration(selector, selectorStart);
+          if (this.keyframes && this.nesting === 1) {
+            this.stream.makeToken();
+            this._parseSelector();
+          } else {
+            this.currentRule.declarations.start = this.stream.pos-1;
+            this._parseDeclaration(selector, selectorStart);
+        }
         } else if (next === ';' || next === '}') {
-          // Otherwise, this is a parse error; we should have seen `{`
-          // instead.
+          // Otherwise, this is a parse error; we should have seen `{` instead.
+          console.log("X");
           throw new ParseError("MISSING_CSS_BLOCK_OPENER", this, selectorStart, selectorEnd, selector);
         } else {
           // We get here if an unexpected character was found.
@@ -311,6 +331,9 @@
         this.stream.next();
         this.currentRule.declarations.end = this.stream.pos;
         this.stream.markTokenStartAfterSpace();
+        if(this.keyframes) {
+          this.nesting--;
+        }
         this._parseSelector();
       }
       // Administratively important: there are two ways for this function
@@ -378,8 +401,7 @@
       }
 
 
-      if ((this.stream.end() && next !== ':') || next === '<' ||
-          next === '}') {
+      if ((this.stream.end() && next !== ':') || next === '<' || next === '}') {
         throw new ParseError("UNFINISHED_CSS_PROPERTY", this, propertyStart, propertyEnd, property);
       }
 
@@ -484,6 +506,7 @@
       }
       else if (next === '}') {
         // This is block level termination; try to read a new selector.
+        console.log("Z");
         this.currentRule.declarations.end = this.stream.pos;
         this._bindCurrentRule();
         this.stream.markTokenStartAfterSpace();
@@ -505,7 +528,7 @@
   //
   // `Slowparse` is the object that holds all exported symbols from
   // this library.
-  var CSSParse = {
+  var RTLTR = {
     Stream: Stream,
     flip: function(cssText) {
       var stream = new Stream(cssText);
@@ -517,16 +540,16 @@
 
   // AMD context
   if (typeof define !== "undefined") {
-    define(function() { return CSSParse; });
+    define(function() { return RTLTR; });
   }
 
   // Node.js context
   else if(typeof module !== "undefined" && module.exports) {
-    module.exports = CSSParse;
+    module.exports = RTLTR;
   }
 
   // browser context
   else if (typeof window !== "undefined") {
-    window.CSSParse = CSSParse;
+    window.RTLTR = RTLTR;
   }
 }());
