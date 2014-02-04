@@ -1,6 +1,6 @@
 {
   "name": "rtltr",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A helper for CSS rwriting to turn right-to-left into left-to-right and vice versa",
   "main": "./index.js",
   "repository": {
