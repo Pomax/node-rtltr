@@ -1,0 +1,24 @@
+{
+  "name": "rtltr",
+  "version": "0.0.1",
+  "description": "A helper for CSS rwriting to turn right-to-left into left-to-right and vice versa",
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pomax/node-rtltr.git"
+  },
+  "keywords": [
+    "CSS",
+    "rtl",
+    "ltr"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": "The Webmaker Team <webmaker-dev@mozilla.org>",
+  "license": "MPL-2.0"
+}
