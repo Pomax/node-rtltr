@@ -2,7 +2,7 @@ A helper for CSS rwriting to turn right-to-left into left-to-right and vice vers
 
 
 ```
-var rtltr = require("rtltrtltr");
+var rtltr = require("rtltr");
 var cssText = ...;
 var flipped = rtltr.flip(cssText);
 ```
